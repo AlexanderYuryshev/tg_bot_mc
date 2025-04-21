@@ -1,0 +1,22 @@
+# Берем образ для сборки программы
+FROM golang:1.24 AS builder
+# Устанавливаем рабочую директорию
+WORKDIR /app
+# Копируем go.mod и go.sum, устанавливаем зависимости
+COPY go.mod go.sum ./
+RUN go mod download
+# Копируем остальные файлы
+COPY . .
+# Компилируем приложение
+RUN CGO_ENABLED=0 GOOS=linux go build -o tg-bot .
+
+# Следующая и последняя стадия
+FROM alpine:latest
+# Устанавливаем рабочую директорию
+WORKDIR /app
+# Копируем скомпилированный файл бота
+COPY --from=builder /app .
+# Открываем порт у образа
+EXPOSE 8080
+# Запускаем приложение
+CMD [ "./tg-bot" ]

@@ -1,0 +1,12 @@
+[Unit]
+Description=Links Telegram Bot
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/go run /tmp/tg_bot_mc/tg_bot_mc.go
+WorkingDirectory=/tmp/tg_bot_mc/tg_bot_mc.go
+Restart=always
+User=tg_bot_admin
+
+[Install]
+WantedBy=multi-user.target
